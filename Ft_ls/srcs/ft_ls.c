@@ -5,92 +5,80 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/02 14:09:05 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/02 21:52:20 by kcosta           ###   ########.fr       */
+/*   Created: 2016/12/03 12:40:14 by kcosta            #+#    #+#             */
+/*   Updated: 2016/12/03 19:14:58 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "ft_ls.h"
 
-typedef struct dirent	t_dirent;
-
-static int	ft_usage(void)
+static int	ft_usage(int opt)
 {
-	printf("usage: ./ft_ls directory file\n");
+	if (opt)
+		ft_printf("ft_ls: illegal option -- %c\n", opt);
+	ft_printf("usage: ./ft_ls [-Ralrt] [file ...]\n");
 	return (1);
 }
 
-static int	ft_error(int errnum, const char *filename)
+static void	ft_init_arg(t_arg *arg)
 {
-	if (filename)
-		ft_printf("ft_ls: %s: %s\n", filename, strerror(errnum));
-	else
-		ft_printf("ft_ls: %s\n", strerror(errnum));
-	return (errnum);
+	arg->f_rec = 0;
+	arg->f_all = 0;
+	arg->f_long = 0;
+	arg->f_rev = 0;
+	arg->f_time = 0;
+	arg->f_color = 0;
 }
 
-static int	ft_list_dir(const char *filename)
+static int	ft_ls(int argc, char **argv, int ft_optind, t_arg *arg)
 {
-	DIR			*dirp;
-	t_dirent	*entry;
+	t_list	*head;
 
-	if (!(dirp = opendir(filename)))
-		return (ft_error(errno, filename));
-	while ((entry = readdir(dirp)))
+	head = NULL;
+	while (ft_optind < argc)
 	{
-		ft_printf("d_ino: %llu\nd_reclen: %hu\nd_type: %hhu\nd_namlen: %hu\n\
-d_name: %s\n",	entry->d_ino, entry->d_reclen, entry->d_type,
-				entry->d_namlen, entry->d_name);
+		ft_lstadd(&head,
+					ft_lstnew(argv[ft_optind], ft_strlen(argv[ft_optind])));
+		ft_optind++;
 	}
-	if (closedir(dirp) == -1)
-		return (ft_error(errno, filename));
-	return (0);
+	if (!head)
+		head = ft_lstnew(".", ft_strlen("."));
+	return (ft_display(arg, head));
 }
 
-static int	ft_inspect_file(const char *filename)
+static int	ft_parse_arg(int argc, char **argv, int *ft_optind, t_arg *arg)
 {
-	t_stat	buf;
+	int		c;
 
-	if (stat(filename, &buf) < 0)
-		return (ft_error(errno, filename));
-	//if (buf)
-	//{
-	ft_printf("st_dev: %d\nst_ino: %llu\nst_mode: %hu\nst_nlink: %hu\n\
-st_uid: %u\nst_gid: %u\nst_rdev: %d\nst_atimespec.tv_sec: %zu\n\
-st_mtimespec.tv_sec: %zu\nst_ctimespec.tv_sec: %zu\nst_size: %lld\n\
-st_blocks: %lld\nst_blksize: %d\nst_flags: %u\nst_gen: %u\n", buf.st_dev,
-buf.st_ino, buf.st_mode, buf.st_nlink, buf.st_uid, buf.st_gid, buf.st_rdev,
-			buf.st_atimespec.tv_sec, buf.st_mtimespec.tv_sec, buf.st_ctimespec.tv_sec,
-			buf.st_size, buf.st_blocks, buf.st_blksize, buf.st_flags, buf.st_gen);
-	ft_printf("%s%s%s", ctime(&buf.st_atimespec.tv_sec),
-			ctime(&buf.st_mtimespec.tv_sec),
-			ctime(&buf.st_ctimespec.tv_sec));
-
-	ft_printf((S_ISDIR(buf.st_mode)) ? "d" : "-");
-	ft_printf((buf.st_mode & S_IRUSR) ? "r" : "-");
-	ft_printf((buf.st_mode & S_IWUSR) ? "w" : "-");
-	ft_printf((buf.st_mode & S_IXUSR) ? "x" : "-");
-	ft_printf((buf.st_mode & S_IRGRP) ? "r" : "-");
-	ft_printf((buf.st_mode & S_IWGRP) ? "w" : "-");
-	ft_printf((buf.st_mode & S_IXGRP) ? "x" : "-");
-	ft_printf((buf.st_mode & S_IROTH) ? "r" : "-");
-	ft_printf((buf.st_mode & S_IWOTH) ? "w" : "-");
-	ft_printf((buf.st_mode & S_IXOTH) ? "x" : "-");
-	ft_printf("\n");
-	//}
-	//else
-	//	return (ft_error(errno, filename));
+	ft_init_arg(arg);
+	while ((c = ft_getopt(argc, argv, "GRalrt", ft_optind)) > 0)
+	{
+		if (c == 'R')
+			arg->f_rec = 1;
+		else if (c == 'a')
+			arg->f_all = 1;
+		else if (c == 'l')
+			arg->f_long = 1;
+		else if (c == 'r')
+			arg->f_rev = 1;
+		else if (c == 't')
+			arg->f_time = 1;
+		else if (c == 'G')
+			arg->f_color = 1;
+		else
+			return (ft_usage(c));
+	}
 	return (0);
 }
 
 int			main(int argc, char **argv)
 {
-	if (argc != 3)
-		return (ft_usage());
-	if (ft_list_dir(argv[1]))
-		return (2);
-	if (ft_inspect_file(argv[2]))
-		return (3);
-	return (0);
+	t_arg	arg;
+	int		ft_optind;
+
+	ft_optind = 1;
+	if (ft_parse_arg(argc, argv, &ft_optind, &arg))
+		return (1);
+	return (ft_ls(argc, argv, ft_optind, &arg));
 }

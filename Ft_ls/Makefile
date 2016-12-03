@@ -6,7 +6,7 @@
 #*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        *#
 #*                                                +#+#+#+#+#+   +#+           *#
 #*   Created: 2016/12/02 14:01:12 by kcosta            #+#    #+#             *#
-#*   Updated: 2016/12/02 15:02:41 by kcosta           ###   ########.fr       *#
+#*   Updated: 2016/12/03 18:58:49 by kcosta           ###   ########.fr       *#
 #*                                                                            *#
 #* ************************************************************************** *#
 
@@ -17,7 +17,9 @@ LIBFT = libft/
 LIB = -L $(LIBFT) -lft
 INCLUDES = -I includes/ -I libft/includes/
 SRCS_PATH = srcs/
-FILES = ft_ls.c
+FILES = ft_ls.c \
+		display.c \
+		error.c
 SRCS = $(addprefix $(SRCS_PATH), $(FILES))
 OBJS = $(SRCS:.c=.o)
 
