@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/02 14:51:17 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/04 17:30:03 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/04 23:34:04 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,14 @@ typedef struct	s_arg
 	int			f_color;
 }				t_arg;
 
-void			ft_delnode(void *content, size_t size);
-t_list			*ft_sort_ascii(t_list *head);
+t_list			*ft_sort(t_list *head, t_arg *arg);
 
 int				ft_proceed(t_arg *arg, t_list *head);
 int				ft_opendir(const char *parent, t_arg *arg);
 int				ft_display(t_arg *arg, t_list *head);
 
 int				ft_error(int errnum, const char *filename);
+int				ft_isvalid_file(char *filename);
+void			ft_delnode(void *content, size_t size);
 
 #endif

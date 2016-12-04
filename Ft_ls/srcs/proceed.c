@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/04 10:11:49 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/04 19:31:58 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/04 23:35:27 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,18 @@ static int	ft_first_proceed(t_arg *arg, t_list *head)
 	while (head)
 	{
 		if (lstat(head->content, &stat) < 0)
-			return (ft_error(errno, head->content));
+		{
+			ft_error(errno, head->content);
+			head = head->next;
+			continue ;
+		}
 		if (!S_ISDIR(stat.st_mode))
 			ft_lstadd(&new, ft_lstnew(head->content, ft_strlen(head->content) + 1));
+		else if (!ft_strcmp(head->content, "."))
+			ft_opendir(".", arg);
 		head = head->next;
 	}
-	ft_display(arg, ft_sort_ascii(new));
-	ft_putchar('\n');
+	ft_display(arg, ft_sort(new, arg));
 	ft_lstdel(&new, &ft_delnode);
 	return (0);
 }
@@ -52,6 +57,23 @@ static char	*ft_get_name(const char *parent, const char *name, int nam_len)
 	return (path);
 }
 
+static int	ft_show_total(t_list *head)
+{
+	int		blksize;
+	t_stat	stat;
+
+	blksize = 0;
+	while (head)
+	{
+		if (lstat(head->content, &stat) < 0)
+			return (1);
+		blksize += stat.st_blocks;
+		head = head->next;
+	}
+	ft_printf("total %d\n", blksize);
+	return (0);
+}
+
 int			ft_opendir(const char *parent, t_arg *arg)
 {
 	DIR			*dirp;
@@ -60,9 +82,9 @@ int			ft_opendir(const char *parent, t_arg *arg)
 	char		*name;
 
 	head = NULL;
+	ft_printf("\n%s:\n", parent);
 	if (!(dirp = opendir(parent)))
 		return (ft_error(errno, parent));
-	ft_printf("%s:\n", parent);
 	while ((entry = readdir(dirp)))
 	{
 		name = ft_get_name(parent, entry->d_name, entry->d_namlen);
@@ -72,34 +94,32 @@ int			ft_opendir(const char *parent, t_arg *arg)
 	}
 	if (closedir(dirp) == -1)
 		return (ft_error(errno, parent));
-	ft_display(arg, ft_sort_ascii(head));
+	if (arg->f_long)
+		ft_show_total(head);
+	ft_display(arg, ft_sort(head, arg));
+	if (arg->f_rec)
+		ft_proceed(arg, ft_sort(head, arg));
 	ft_lstdel(&head, &ft_delnode);
-	/*if (arg->f_rec)
-		return (1);*/
 	return (0);
 }
 
 int			ft_proceed(t_arg *arg, t_list *head)
 {
-	static int	first;
+	static int	first = 0;
 	t_stat		stat;
 
-	first = 0;
 	if (!first)
 	{
+		first++;
 		if (ft_first_proceed(arg, head))
 			return (1);
-		first++;
 	}
-	else
-		ft_putchar('\n');
 	while (head)
 	{
 		if (lstat(head->content, &stat) < 0)
-			return (ft_error(errno, head->content));
-		if (S_ISDIR(stat.st_mode))
-			if (ft_opendir(head->content, arg))
-				return (1);
+			return (1);
+		if (ft_isvalid_file(head->content) && S_ISDIR(stat.st_mode))
+			ft_opendir(head->content, arg);
 		head = head->next;
 	}
 	return (0);

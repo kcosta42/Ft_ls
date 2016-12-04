@@ -6,7 +6,7 @@
 #*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        *#
 #*                                                +#+#+#+#+#+   +#+           *#
 #*   Created: 2016/12/02 14:01:12 by kcosta            #+#    #+#             *#
-#*   Updated: 2016/12/04 17:30:17 by kcosta           ###   ########.fr       *#
+#*   Updated: 2016/12/04 22:50:33 by kcosta           ###   ########.fr       *#
 #*                                                                            *#
 #* ************************************************************************** *#
 
@@ -21,8 +21,7 @@ FILES = ft_ls.c \
 		display.c \
 		proceed.c \
 		sort.c \
-		misc.c \
-		error.c
+		misc.c
 SRCS = $(addprefix $(SRCS_PATH), $(FILES))
 OBJS = $(SRCS:.c=.o)
 
