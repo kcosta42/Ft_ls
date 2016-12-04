@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:40:14 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/03 19:14:58 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/04 18:22:27 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	ft_usage(int opt)
 {
 	if (opt)
 		ft_printf("ft_ls: illegal option -- %c\n", opt);
-	ft_printf("usage: ./ft_ls [-Ralrt] [file ...]\n");
+	ft_printf("usage: ./ft_ls [-GRalrt] [file ...]\n");
 	return (1);
 }
 
@@ -38,13 +38,16 @@ static int	ft_ls(int argc, char **argv, int ft_optind, t_arg *arg)
 	head = NULL;
 	while (ft_optind < argc)
 	{
-		ft_lstadd(&head,
-					ft_lstnew(argv[ft_optind], ft_strlen(argv[ft_optind])));
+		if (!head)
+			head = ft_lstnew(argv[ft_optind], ft_strlen(argv[ft_optind]) + 1);
+		else
+			ft_lstadd(&head,
+					ft_lstnew(argv[ft_optind], ft_strlen(argv[ft_optind]) + 1));
 		ft_optind++;
 	}
 	if (!head)
-		head = ft_lstnew(".", ft_strlen("."));
-	return (ft_display(arg, head));
+		return (ft_opendir(".", arg));
+	return (ft_proceed(arg, ft_sort_ascii(head)));
 }
 
 static int	ft_parse_arg(int argc, char **argv, int *ft_optind, t_arg *arg)

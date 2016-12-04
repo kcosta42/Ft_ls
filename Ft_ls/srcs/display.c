@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:41:00 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/03 19:15:22 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/04 19:27:18 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ static int		ft_display_long(const char *filename)
 	ft_print_mode(stat.st_mode);
 	ft_printf(" %hu %s %s %lld %s ",
 		stat.st_nlink, passwd->pw_name, group->gr_name, stat.st_size, time_fmt);
+	ft_strdel(&time_fmt);
 	return (0);
 }
 
@@ -59,14 +60,16 @@ static int		ft_display_name(const char *filename, int f_color)
 	t_stat	stat;
 	mode_t	mode;
 	char	*color;
+	char	*file;
 
+	file = !(file = ft_strchr(filename + 1, '/')) ? (char*)filename : file + 1;
 	color = "\033[0m";
 	if (lstat(filename, &stat) < 0)
 		return (ft_error(errno, filename));
 	mode = stat.st_mode;
 	if (f_color)
 	{
-		color = ((mode & S_IXUSR) || (mode & S_IXGRP) || (mode & S_IXOTH)) ? 
+		color = ((mode & S_IXUSR) || (mode & S_IXGRP) || (mode & S_IXOTH)) ?
 									"\033[31m" : color;
 		color = (S_ISDIR(mode)) ? "\033[34m" : color;
 		color = (S_ISCHR(mode)) ? "\033[43;34m" : color;
@@ -75,7 +78,7 @@ static int		ft_display_name(const char *filename, int f_color)
 		color = (S_ISLNK(mode)) ? "\033[35m" : color;
 		color = (S_ISSOCK(mode)) ? "\033[106;30m" : color;
 	}
-	ft_printf("%s%s\033[0m\n", color, filename);
+	ft_printf("%s%s\033[0m\n", color, file);
 	return (0);
 }
 
