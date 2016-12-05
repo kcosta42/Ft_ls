@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/02 14:51:17 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/04 23:34:04 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/05 22:04:11 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <sys/dir.h>
 # include <sys/stat.h>
 # include <sys/types.h>
+# include <sys/ioctl.h>
 
 # include <uuid/uuid.h>
 
@@ -43,6 +44,7 @@ typedef struct	s_arg
 	int			f_rev;
 	int			f_time;
 	int			f_color;
+	int			f_simple;
 }				t_arg;
 
 t_list			*ft_sort(t_list *head, t_arg *arg);

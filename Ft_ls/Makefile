@@ -6,13 +6,13 @@
 #*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        *#
 #*                                                +#+#+#+#+#+   +#+           *#
 #*   Created: 2016/12/02 14:01:12 by kcosta            #+#    #+#             *#
-#*   Updated: 2016/12/04 22:50:33 by kcosta           ###   ########.fr       *#
+#*   Updated: 2016/12/05 19:43:58 by kcosta           ###   ########.fr       *#
 #*                                                                            *#
 #* ************************************************************************** *#
 
 NAME = ft_ls
 CC = gcc
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g
 LIBFT = libft/
 LIB = -L $(LIBFT) -lft
 INCLUDES = -I includes/ -I libft/includes/

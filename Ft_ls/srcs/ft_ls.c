@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:40:14 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/04 23:36:51 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/05 23:09:05 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static void	ft_init_arg(t_arg *arg)
 	arg->f_rev = 0;
 	arg->f_time = 0;
 	arg->f_color = 0;
+	arg->f_simple = 0;
 }
 
 static int	ft_ls(int argc, char **argv, int ft_optind, t_arg *arg)
@@ -46,7 +47,7 @@ static int	ft_ls(int argc, char **argv, int ft_optind, t_arg *arg)
 		ft_optind++;
 	}
 	if (!head)
-		return (ft_opendir(".", arg));
+		head = ft_lstnew(".", 2);
 	return (ft_proceed(arg, ft_sort(head, arg)));
 }
 
@@ -68,6 +69,8 @@ static int	ft_parse_arg(int argc, char **argv, int *ft_optind, t_arg *arg)
 			arg->f_time = 1;
 		else if (c == 'G')
 			arg->f_color = 1;
+		else if (c == '1')
+			arg->f_simple = 1;
 		else
 			return (ft_usage(c));
 	}

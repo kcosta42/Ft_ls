@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/04 10:11:49 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/04 23:35:27 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/05 23:22:52 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,14 @@ static int	ft_first_proceed(t_arg *arg, t_list *head)
 			continue ;
 		}
 		if (!S_ISDIR(stat.st_mode))
-			ft_lstadd(&new, ft_lstnew(head->content, ft_strlen(head->content) + 1));
-		else if (!ft_strcmp(head->content, "."))
-			ft_opendir(".", arg);
+			ft_lstadd(&new, ft_lstnew(head->content,
+												ft_strlen(head->content) + 1));
 		head = head->next;
 	}
-	ft_display(arg, ft_sort(new, arg));
+	if (new)
+		ft_display(arg, ft_sort(new, arg));
+	if (new && !(arg->f_long && arg->f_rec))
+		ft_putchar('\n');
 	ft_lstdel(&new, &ft_delnode);
 	return (0);
 }
@@ -66,12 +68,40 @@ static int	ft_show_total(t_list *head)
 	while (head)
 	{
 		if (lstat(head->content, &stat) < 0)
-			return (1);
+			break ;
 		blksize += stat.st_blocks;
 		head = head->next;
 	}
 	ft_printf("total %d\n", blksize);
 	return (0);
+}
+
+static int	ft_show_name(const char *parent, t_arg *arg)
+{
+	static int	dir = 0;
+
+	if (parent)
+	{
+		if (dir > 1 || (dir && arg->f_rec && arg->f_long))
+			ft_printf("\n%s:\n", parent);
+		else if (dir)
+			ft_printf("%s:\n", parent);
+	}
+	dir++;
+	return (0);
+}
+
+static int	ft_lookthrough(t_list *head)
+{
+	int		dir;
+
+	dir = 0;
+	while (head)
+	{
+		dir++;
+		head = head->next;
+	}
+	return (dir);
 }
 
 int			ft_opendir(const char *parent, t_arg *arg)
@@ -82,7 +112,7 @@ int			ft_opendir(const char *parent, t_arg *arg)
 	char		*name;
 
 	head = NULL;
-	ft_printf("\n%s:\n", parent);
+	ft_show_name(parent, arg);
 	if (!(dirp = opendir(parent)))
 		return (ft_error(errno, parent));
 	while ((entry = readdir(dirp)))
@@ -111,14 +141,16 @@ int			ft_proceed(t_arg *arg, t_list *head)
 	if (!first)
 	{
 		first++;
-		if (ft_first_proceed(arg, head))
-			return (1);
+		if (ft_lookthrough(head) > 1)
+			ft_show_name(NULL, arg);
+		(void)ft_first_proceed(arg, head);
 	}
 	while (head)
 	{
 		if (lstat(head->content, &stat) < 0)
 			return (1);
-		if (ft_isvalid_file(head->content) && S_ISDIR(stat.st_mode))
+		if ((first == 1 || ft_isvalid_file(head->content))
+						&& S_ISDIR(stat.st_mode))
 			ft_opendir(head->content, arg);
 		head = head->next;
 	}

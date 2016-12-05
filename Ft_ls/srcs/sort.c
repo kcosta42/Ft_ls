@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 13:52:50 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/04 23:30:03 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/05 20:49:41 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,11 +74,11 @@ static t_list	*ft_sort_time(t_list *head, t_stat *stat)
 		cursor = top->next;
 		while (cursor)
 		{
-			if ((lstat(top->content, stat) < 0)
-				|| lstat(cursor->content, &stat2) < 0)
-				return (NULL);
-			if (stat->st_mtimespec.tv_sec < stat2.st_mtimespec.tv_sec)
-				ft_swap_str((char**)&top->content, (char**)&cursor->content);
+			if ((lstat(top->content, stat) > 0)
+				&& lstat(cursor->content, &stat2) > 0)
+				if (stat->st_mtimespec.tv_sec < stat2.st_mtimespec.tv_sec)
+					ft_swap_str((char**)&top->content,
+													(char**)&cursor->content);
 			cursor = cursor->next;
 		}
 		top = top->next;
@@ -98,11 +98,11 @@ static t_list	*ft_rev_sort_time(t_list *head, t_stat *stat)
 		cursor = top->next;
 		while (cursor)
 		{
-			if ((lstat(top->content, stat) < 0)
-				|| lstat(cursor->content, &stat2) < 0)
-				return (NULL);
-			if (stat->st_mtimespec.tv_sec > stat2.st_mtimespec.tv_sec)
-				ft_swap_str((char**)&top->content, (char**)&cursor->content);
+			if ((lstat(top->content, stat) > 0)
+				&& lstat(cursor->content, &stat2) > 0)
+				if (stat->st_mtimespec.tv_sec > stat2.st_mtimespec.tv_sec)
+					ft_swap_str((char**)&top->content,
+													(char**)&cursor->content);
 			cursor = cursor->next;
 		}
 		top = top->next;

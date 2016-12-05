@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:41:00 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/04 21:28:43 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/05 22:52:47 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,28 @@ static void		ft_print_mode(mode_t st_mode)
 	ft_putchar((st_mode & S_IXOTH) ? 'x' : '-');
 }
 
+static char		*ft_get_time(time_t tv_sec)
+{
+	char		*time_fmt;
+	char		*tmp;
+	char		*tmp2;
+	time_t		today;
+
+	(void)time(&today);
+	if (today - tv_sec > 14515200)
+	{
+		tmp = ctime(&tv_sec);
+		tmp2 = ft_strsub(tmp, 4, 7);
+		tmp = ft_strsub(tmp, 19, 5);
+		time_fmt = ft_strjoin(tmp2, tmp);
+		ft_strdel(&tmp);
+		ft_strdel(&tmp2);
+	}
+	else
+		time_fmt = ft_strsub(ctime(&tv_sec), 4, 12);
+	return (time_fmt);
+}
+
 static int		ft_display_long(const char *filename)
 {
 	t_stat		stat;
@@ -47,7 +69,7 @@ static int		ft_display_long(const char *filename)
 		return (1);
 	passwd = getpwuid(stat.st_uid);
 	group = getgrgid(stat.st_gid);
-	time_fmt = ft_strsub(ctime(&stat.st_mtimespec.tv_sec), 4, 12);
+	time_fmt = ft_get_time(stat.st_mtimespec.tv_sec);
 	ft_print_mode(stat.st_mode);
 	if (S_ISCHR(stat.st_mode) || S_ISBLK(stat.st_mode))
 		ft_printf(" %2hu %s %8s %7u, %3u %s ",
@@ -79,6 +101,39 @@ static char		*ft_get_color(int f_color, mode_t mode)
 	return (color);
 }
 
+static size_t	ft_get_max_size(t_list *head)
+{
+	size_t		max;
+	char	*file;
+
+	max = 0;
+	while (head)
+	{
+		file = !(file = ft_strrchr(head->content + 1, '/')) ?
+												(char*)head->content : file + 1;
+		if (ft_strlen(file) > max)
+			max = ft_strlen(file);
+		head = head->next;
+	}
+	return (max + 1);
+}
+
+static int		ft_display_col(int max_size, int *current_col,
+											const char *filename, int f_color)
+{
+	t_stat	stat;
+	mode_t	mode;
+	char	*file;
+
+	file = !(file = ft_strrchr(filename + 1, '/')) ? (char*)filename : file + 1;
+	if (lstat(filename, &stat) < 0)
+		return (1);
+	*current_col += max_size;
+	mode = stat.st_mode;
+	ft_printf("%s%-*s\033[0m", ft_get_color(f_color, mode), max_size, file);
+	return (0);
+}
+
 static int		ft_display_name(const char *filename, int f_color, int f_long)
 {
 	t_stat	stat;
@@ -105,12 +160,29 @@ static int		ft_display_name(const char *filename, int f_color, int f_long)
 
 int				ft_display(t_arg *arg, t_list *head)
 {
+	struct winsize	ws;
+	int				cur_col;
+	int				max;
+
+	ioctl(0, TIOCGWINSZ, &ws);
+	cur_col = 0;
+	max = ft_get_max_size(head);
 	while (head)
 	{
 		if (arg->f_long)
 			(void)ft_display_long(head->content);
-		(void)ft_display_name(head->content, arg->f_color, arg->f_long);
+		if (arg->f_long || arg->f_simple)
+			(void)ft_display_name(head->content, arg->f_color, arg->f_long);
+		else
+			(void)ft_display_col(max, &cur_col, head->content, arg->f_color);
 		head = head->next;
+		if (head && (cur_col + max > ws.ws_col))
+		{
+			ft_putchar('\n');
+			cur_col = 0;
+		}
 	}
+	if (!arg->f_long && !arg->f_simple)
+		ft_putchar('\n');
 	return (0);
 }
