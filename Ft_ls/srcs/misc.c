@@ -6,18 +6,20 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/04 17:29:26 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/06 09:02:35 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 09:41:43 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "ft_ls.h"
 
-int		ft_show_total(t_list *head)
+int		ft_show_total(t_list *head, t_arg *arg)
 {
 	int		blksize;
 	t_stat	stat;
 
+	if (!arg->f_long)
+		return (1);
 	blksize = 0;
 	while (head)
 	{

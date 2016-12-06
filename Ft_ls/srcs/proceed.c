@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/04 10:11:49 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/06 08:53:39 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 09:41:57 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,14 +86,14 @@ int			ft_opendir(const char *parent, t_arg *arg)
 	while ((entry = readdir(dirp)))
 	{
 		name = ft_get_name(parent, entry->d_name, entry->d_namlen);
-		if (entry->d_name[0] != '.' || arg->f_all)
+		if (entry->d_name[0] != '.'
+							|| (arg->f_all && ft_isvalid_file(entry->d_name)))
 			ft_lstadd(&head, ft_lstnew(name, ft_strlen(name) + 1));
 		ft_strdel(&name);
 	}
 	if (closedir(dirp) == -1)
 		return (ft_error(errno, parent));
-	if (arg->f_long)
-		ft_show_total(head);
+	ft_show_total(head, arg);
 	ft_display(arg, ft_sort(head, arg));
 	if (arg->f_rec)
 		ft_proceed(arg, ft_sort(head, arg));
@@ -117,8 +117,7 @@ int			ft_proceed(t_arg *arg, t_list *head)
 	{
 		if (lstat(head->content, &stat) < 0)
 			return (1);
-		if ((first == 1 || ft_isvalid_file(head->content))
-						&& S_ISDIR(stat.st_mode))
+		if (S_ISDIR(stat.st_mode))
 			ft_opendir(head->content, arg);
 		head = head->next;
 	}
