@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 13:52:50 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/06 12:21:32 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 12:23:39 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static t_list	*ft_sort_rev(t_list *head)
 {
 	t_list	*top;
 	t_list	*cursor;
-	
+
 	top = head;
 	while (top)
 	{

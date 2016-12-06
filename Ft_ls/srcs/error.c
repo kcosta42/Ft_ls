@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 18:43:57 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/06 12:15:18 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 12:23:27 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static int	ft_display_invalid_file(const char *parent, t_arg *arg)
 	return (0);
 }
 
-int		ft_open_invalid_dir(t_arg *arg, t_list *head)
+int			ft_open_invalid_dir(t_arg *arg, t_list *head)
 {
 	while (head)
 	{
