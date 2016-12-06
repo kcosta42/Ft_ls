@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:41:00 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/06 13:37:20 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 15:51:42 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static int		ft_display_long(const char *filename)
 		stat.st_nlink, passwd->pw_name, group->gr_name,
 		major(stat.st_rdev), minor(stat.st_rdev), time_fmt);
 	else
-		ft_printf(" %3hu %6s %11s %6lld %s ",
+		ft_printf(" %2hu %6s %11s %6lld %s ",
 		stat.st_nlink, passwd->pw_name, group->gr_name, stat.st_size, time_fmt);
 	ft_strdel(&time_fmt);
 	return (0);
