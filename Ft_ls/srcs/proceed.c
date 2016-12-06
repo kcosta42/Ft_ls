@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/04 10:11:49 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/06 09:41:57 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 12:07:10 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	ft_first_proceed(t_arg *arg, t_list *head)
 	return (0);
 }
 
-static char	*ft_get_name(const char *parent, const char *name, int nam_len)
+char		*ft_get_name(const char *parent, const char *name, int nam_len)
 {
 	char	*tmp;
 	char	*del;
@@ -86,8 +86,7 @@ int			ft_opendir(const char *parent, t_arg *arg)
 	while ((entry = readdir(dirp)))
 	{
 		name = ft_get_name(parent, entry->d_name, entry->d_namlen);
-		if (entry->d_name[0] != '.'
-							|| (arg->f_all && ft_isvalid_file(entry->d_name)))
+		if (entry->d_name[0] != '.' || arg->f_all)
 			ft_lstadd(&head, ft_lstnew(name, ft_strlen(name) + 1));
 		ft_strdel(&name);
 	}
@@ -112,12 +111,13 @@ int			ft_proceed(t_arg *arg, t_list *head)
 		if (ft_lookthrough(head) > 1)
 			ft_show_name(NULL, arg);
 		(void)ft_first_proceed(arg, head);
+		ft_open_invalid_dir(arg, head);
 	}
 	while (head)
 	{
 		if (lstat(head->content, &stat) < 0)
 			return (1);
-		if (S_ISDIR(stat.st_mode))
+		if (ft_isvalid_file(head->content) && S_ISDIR(stat.st_mode))
 			ft_opendir(head->content, arg);
 		head = head->next;
 	}

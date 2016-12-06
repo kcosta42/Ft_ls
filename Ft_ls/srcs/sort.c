@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 13:52:50 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/06 08:53:03 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 12:21:32 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,67 +33,44 @@ static t_list	*ft_sort_ascii(t_list *head)
 	return (head);
 }
 
-static t_list	*ft_rev_sort_ascii(t_list *head)
-{
-	t_list	*top;
-	t_list	*cursor;
-
-	top = head;
-	while (top)
-	{
-		cursor = top->next;
-		while (cursor)
-		{
-			if (ft_strcmp(top->content, cursor->content) < 0)
-				ft_swap_str((char**)&top->content, (char**)&cursor->content);
-			cursor = cursor->next;
-		}
-		top = top->next;
-	}
-	return (head);
-}
-
 static t_list	*ft_sort_time(t_list *head, t_stat *stat)
 {
 	t_list	*top;
-	t_list	*cursor;
+	t_list	*cur;
 	t_stat	stat2;
 
 	top = head;
 	while (top)
 	{
-		cursor = top->next;
-		while (cursor)
+		cur = top->next;
+		while (cur)
 		{
-			if ((lstat(top->content, stat) > 0)
-				&& lstat(cursor->content, &stat2) > 0)
-				if (stat->st_mtimespec.tv_sec < stat2.st_mtimespec.tv_sec)
-					ft_swap_str((char**)&top->content,
-													(char**)&cursor->content);
-			cursor = cursor->next;
+			lstat(top->content, stat);
+			lstat(cur->content, &stat2);
+			if (stat->st_mtimespec.tv_sec < stat2.st_mtimespec.tv_sec)
+				ft_swap_str((char**)&top->content, (char**)&cur->content);
+			else if (stat->st_mtimespec.tv_sec == stat2.st_mtimespec.tv_sec)
+				if (ft_strcmp(top->content, cur->content) > 0)
+					ft_swap_str((char**)&top->content, (char**)&cur->content);
+			cur = cur->next;
 		}
 		top = top->next;
 	}
 	return (head);
 }
 
-static t_list	*ft_rev_sort_time(t_list *head, t_stat *stat)
+static t_list	*ft_sort_rev(t_list *head)
 {
 	t_list	*top;
 	t_list	*cursor;
-	t_stat	stat2;
-
+	
 	top = head;
 	while (top)
 	{
 		cursor = top->next;
 		while (cursor)
 		{
-			if ((lstat(top->content, stat) > 0)
-				&& lstat(cursor->content, &stat2) > 0)
-				if (stat->st_mtimespec.tv_sec > stat2.st_mtimespec.tv_sec)
-					ft_swap_str((char**)&top->content,
-													(char**)&cursor->content);
+			ft_swap_str((char**)&top->content, (char**)&cursor->content);
 			cursor = cursor->next;
 		}
 		top = top->next;
@@ -106,15 +83,10 @@ t_list			*ft_sort(t_list *head, t_arg *arg)
 	t_stat	stat;
 
 	if (arg->f_time)
-	{
-		if (arg->f_rev)
-			head = ft_rev_sort_time(head, &stat);
-		else
-			head = ft_sort_time(head, &stat);
-	}
-	else if (arg->f_rev)
-		head = ft_rev_sort_ascii(head);
+		head = ft_sort_time(head, &stat);
 	else
 		head = ft_sort_ascii(head);
+	if (arg->f_rev)
+		head = ft_sort_rev(head);
 	return (head);
 }

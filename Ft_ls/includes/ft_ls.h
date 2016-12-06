@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/02 14:51:17 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/06 09:41:26 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 11:21:04 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,9 @@ t_list			*ft_sort(t_list *head, t_arg *arg);
 int				ft_proceed(t_arg *arg, t_list *head);
 int				ft_opendir(const char *parent, t_arg *arg);
 int				ft_display(t_arg *arg, t_list *head);
+int				ft_open_invalid_dir(t_arg *arg, t_list *head);
 
+char			*ft_get_name(const char *parent, const char *name, int nam_len);
 int				ft_show_total(t_list *head, t_arg *arg);
 int				ft_show_name(const char *parent, t_arg *arg);
 char			*ft_get_time(time_t tv_sec);
