@@ -6,7 +6,7 @@
 #*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        *#
 #*                                                +#+#+#+#+#+   +#+           *#
 #*   Created: 2016/12/02 14:01:12 by kcosta            #+#    #+#             *#
-#*   Updated: 2016/12/06 09:09:50 by kcosta           ###   ########.fr       *#
+#*   Updated: 2016/12/06 12:26:40 by kcosta           ###   ########.fr       *#
 #*                                                                            *#
 #* ************************************************************************** *#
 
@@ -52,8 +52,10 @@ $(NAME) : $(OBJS)
 	@/bin/echo "$(YELLOW)[$(BOLD)$(BLUE)$(NAME) $(MAGENTA)Created!$(EOC)$(YELLOW)]$(EOC)"
 
 clean :
+	@/bin/echo "$(YELLOW)[$(RED)$(BOLD)Cleaning $(EOC)$(YELLOW)...]$(EOC)"
 	@/bin/rm -f $(OBJS)
-	@make -C $(LIBFT) clean
+	@make -C $(LIBFT) clean &> /dev/null
+	@/bin/echo "$(YELLOW)[$(RED)$(BOLD)All .o Removed!$(EOC)$(YELLOW)]$(EOC)"
 
 fclean : clean
 	@make -C $(LIBFT) fclean
