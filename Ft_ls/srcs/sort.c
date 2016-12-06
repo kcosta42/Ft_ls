@@ -6,21 +6,12 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 13:52:50 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/05 20:49:41 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 08:53:03 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 #include "libft.h"
-
-static void	ft_swap_str(char **s1, char **s2)
-{
-	char	*tmp;
-
-	tmp = *s1;
-	*s1 = *s2;
-	*s2 = tmp;
-}
 
 static t_list	*ft_sort_ascii(t_list *head)
 {

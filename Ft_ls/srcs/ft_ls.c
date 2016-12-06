@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:40:14 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/05 23:09:05 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 08:52:44 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ static int	ft_ls(int argc, char **argv, int ft_optind, t_arg *arg)
 static int	ft_parse_arg(int argc, char **argv, int *ft_optind, t_arg *arg)
 {
 	int		c;
+
 	ft_init_arg(arg);
 	while ((c = ft_getopt(argc, argv, "1GRalrt", ft_optind)) > 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/03 12:41:00 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/05 22:52:47 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 09:22:02 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,28 +36,6 @@ static void		ft_print_mode(mode_t st_mode)
 	ft_putchar((st_mode & S_IXOTH) ? 'x' : '-');
 }
 
-static char		*ft_get_time(time_t tv_sec)
-{
-	char		*time_fmt;
-	char		*tmp;
-	char		*tmp2;
-	time_t		today;
-
-	(void)time(&today);
-	if (today - tv_sec > 14515200)
-	{
-		tmp = ctime(&tv_sec);
-		tmp2 = ft_strsub(tmp, 4, 7);
-		tmp = ft_strsub(tmp, 19, 5);
-		time_fmt = ft_strjoin(tmp2, tmp);
-		ft_strdel(&tmp);
-		ft_strdel(&tmp2);
-	}
-	else
-		time_fmt = ft_strsub(ctime(&tv_sec), 4, 12);
-	return (time_fmt);
-}
-
 static int		ft_display_long(const char *filename)
 {
 	t_stat		stat;
@@ -72,50 +50,14 @@ static int		ft_display_long(const char *filename)
 	time_fmt = ft_get_time(stat.st_mtimespec.tv_sec);
 	ft_print_mode(stat.st_mode);
 	if (S_ISCHR(stat.st_mode) || S_ISBLK(stat.st_mode))
-		ft_printf(" %2hu %s %8s %7u, %3u %s ",
+		ft_printf(" %2hu %s %8s %9u, %3u %s ",
 		stat.st_nlink, passwd->pw_name, group->gr_name,
 		major(stat.st_rdev), minor(stat.st_rdev), time_fmt);
 	else
-		ft_printf(" %2hu %6s %6s %5lld %s ",
+		ft_printf(" %3hu %6s %11s %6lld %s ",
 		stat.st_nlink, passwd->pw_name, group->gr_name, stat.st_size, time_fmt);
 	ft_strdel(&time_fmt);
 	return (0);
-}
-
-static char		*ft_get_color(int f_color, mode_t mode)
-{
-	char		*color;
-
-	color = "\033[0m";
-	if (f_color)
-	{
-		color = ((mode & S_IXUSR) || (mode & S_IXGRP) || (mode & S_IXOTH)) ?
-									"\033[31m" : color;
-		color = (S_ISDIR(mode)) ? "\033[34m" : color;
-		color = (S_ISCHR(mode)) ? "\033[43;34m" : color;
-		color = (S_ISBLK(mode)) ? "\033[106;34m" : color;
-		color = (S_ISFIFO(mode)) ? "\033[100;32m" : color;
-		color = (S_ISLNK(mode)) ? "\033[35m" : color;
-		color = (S_ISSOCK(mode)) ? "\033[43;34m" : color;
-	}
-	return (color);
-}
-
-static size_t	ft_get_max_size(t_list *head)
-{
-	size_t		max;
-	char	*file;
-
-	max = 0;
-	while (head)
-	{
-		file = !(file = ft_strrchr(head->content + 1, '/')) ?
-												(char*)head->content : file + 1;
-		if (ft_strlen(file) > max)
-			max = ft_strlen(file);
-		head = head->next;
-	}
-	return (max + 1);
 }
 
 static int		ft_display_col(int max_size, int *current_col,
@@ -125,7 +67,8 @@ static int		ft_display_col(int max_size, int *current_col,
 	mode_t	mode;
 	char	*file;
 
-	file = !(file = ft_strrchr(filename + 1, '/')) ? (char*)filename : file + 1;
+	file = ft_strrchr(filename + 1, '/');
+	file = (!file) ? (char*)filename : file + 1;
 	if (lstat(filename, &stat) < 0)
 		return (1);
 	*current_col += max_size;
@@ -142,7 +85,8 @@ static int		ft_display_name(const char *filename, int f_color, int f_long)
 	char	buf[BUFF_SIZE];
 	int		size;
 
-	file = !(file = ft_strrchr(filename + 1, '/')) ? (char*)filename : file + 1;
+	file = ft_strrchr(filename + 1, '/');
+	file = (!file) ? (char*)filename : file + 1;
 	if (lstat(filename, &stat) < 0)
 		return (1);
 	mode = stat.st_mode;

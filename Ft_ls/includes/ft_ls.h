@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/02 14:51:17 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/05 22:04:11 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 09:01:29 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,15 @@ int				ft_proceed(t_arg *arg, t_list *head);
 int				ft_opendir(const char *parent, t_arg *arg);
 int				ft_display(t_arg *arg, t_list *head);
 
+int				ft_show_total(t_list *head);
+int				ft_show_name(const char *parent, t_arg *arg);
+char			*ft_get_time(time_t tv_sec);
+char			*ft_get_color(int f_color, mode_t mode);
+size_t			ft_get_max_size(t_list *head);
+
 int				ft_error(int errnum, const char *filename);
 int				ft_isvalid_file(char *filename);
 void			ft_delnode(void *content, size_t size);
+void			ft_swap_str(char **s1, char **s2);
 
 #endif

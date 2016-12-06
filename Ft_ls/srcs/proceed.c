@@ -6,7 +6,7 @@
 /*   By: kcosta <kcosta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/04 10:11:49 by kcosta            #+#    #+#             */
-/*   Updated: 2016/12/05 23:22:52 by kcosta           ###   ########.fr       */
+/*   Updated: 2016/12/06 08:53:39 by kcosta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,38 +57,6 @@ static char	*ft_get_name(const char *parent, const char *name, int nam_len)
 		ft_strdel(&tmp);
 	ft_strdel(&del);
 	return (path);
-}
-
-static int	ft_show_total(t_list *head)
-{
-	int		blksize;
-	t_stat	stat;
-
-	blksize = 0;
-	while (head)
-	{
-		if (lstat(head->content, &stat) < 0)
-			break ;
-		blksize += stat.st_blocks;
-		head = head->next;
-	}
-	ft_printf("total %d\n", blksize);
-	return (0);
-}
-
-static int	ft_show_name(const char *parent, t_arg *arg)
-{
-	static int	dir = 0;
-
-	if (parent)
-	{
-		if (dir > 1 || (dir && arg->f_rec && arg->f_long))
-			ft_printf("\n%s:\n", parent);
-		else if (dir)
-			ft_printf("%s:\n", parent);
-	}
-	dir++;
-	return (0);
 }
 
 static int	ft_lookthrough(t_list *head)
