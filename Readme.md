@@ -12,6 +12,10 @@ About
 
 This is the first project of the Unix branch at School 42 Paris
 
+Installation
+------------
+Run `make fclean && make`
+
 Usage
 -----
 `./ft_ls [-1GRalrt] [file ...]`
